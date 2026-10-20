@@ -1,0 +1,6 @@
+emit:
+  - "@ebusd/ebus-typespec"
+options:
+  "@ebusd/ebus-typespec":
+    emitter-output-dir: "{project-root}/out"
+    withMinMax: true

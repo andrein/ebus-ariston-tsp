@@ -1,0 +1,15 @@
+{
+  "name": "ebus-ariston-tsp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TypeSpec source for the Ariston Alteas One Net ebusd configuration (ported from hand-written CSV)",
+  "type": "module",
+  "scripts": {
+    "build": "tsp compile src/main.tsp",
+    "clean": "rm -rf out tsp-output"
+  },
+  "devDependencies": {
+    "@ebusd/ebus-typespec": "file:../ebus-typespec",
+    "@typespec/compiler": "~1.17.0"
+  }
+}
