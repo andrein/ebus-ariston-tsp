@@ -41,6 +41,9 @@ scalar skip4 extends IGN;
 @maxLength(5)
 scalar skip5 extends IGN;
 
+@maxLength(12)
+scalar serial_number extends STR;
+
 @values(Values_temperature_range)
 scalar temperature_range extends UCH;
 

@@ -89,6 +89,18 @@ namespace Boiler {
     @out @divisor(10) @unit("°C") value: SIN;
   }
 
+  // Broadcast only while the bus is enumerated: when the boiler starts or a new device announces itself. The serial is
+  // followed by the boiler's slave address, fe and two unknown bytes.
+  /** Serial number */
+  @passive
+  @qq(0x37)
+  @zz(BROADCAST)
+  @id(0x20, 0x31)
+  model SerialNumber {
+    @out value: serial_number;
+    @out _: skip4;
+  }
+
   // The switch states are answers to the polled broadcast *Query reads, like the zone settings in zone.tsp; only
   // the value is kept.
   /** CH */

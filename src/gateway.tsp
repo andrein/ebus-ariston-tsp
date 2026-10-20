@@ -105,6 +105,17 @@ namespace Gateway {
     /** end */
     @out date: HDA3;
   }
+
+  // Broadcast only while the bus is enumerated (see the boiler's serial number).
+  /** Serial number */
+  @passive
+  @qq(0x7f)
+  @zz(BROADCAST)
+  @id(0x20, 0x31)
+  model SerialNumber {
+    @out value: serial_number;
+    @out _: skip4;
+  }
 }
 
 enum Values_connectivity_status {
