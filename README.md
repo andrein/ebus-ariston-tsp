@@ -41,7 +41,7 @@ released emitter:
   row for a message in the same circuit names that circuit, and has no ZZ for a broadcast message. Without it, ebusd
   resolves the temperature range condition by name in any circuit
   ([john30/ebusd#1811](https://github.com/john30/ebusd/issues/1811)).
-- `feat/poll-broadcast-read`: a broadcast model with `@poll` is a polled read, so each `*Query` sits next to the
+- `feat/poll-broadcast-read` ([john30/ebus-typespec#6](https://github.com/john30/ebus-typespec/pull/6)): a broadcast model with `@poll` is a polled read, so each `*Query` sits next to the
   setting it refreshes. The released emitter turns every active broadcast model into a write and drops `@poll`.
 
 It is a `file:` dependency because the package ships no built `dist` and a git dependency would install it unbuilt.
