@@ -12,7 +12,6 @@ emitter produces [ebusd](https://github.com/john30/ebusd) CSV message definition
 | `src/boiler.tsp` | `Boiler` circuit (slave `0x3c`): live readings, CH/DHW/auto switches, configuration, statistics, maintenance |
 | `src/zone.tsp` | Zone 1 messages in the `Boiler` circuit, prefixed `Zone1` (broadcast only): thermoregulation settings (slope and offset write limits follow the temperature range), CH flow setpoint, heat request |
 | `src/gateway.tsp` | `Gateway` circuit (Ariston Net, slave `0x84`): Wi-Fi, internet time, connectivity, signal, activation, upgrade status |
-| `src/fe.query.tsp` | Polled broadcast questions that make the boiler send the zone settings and CH/DHW/auto switches |
 | `src/main.tsp` | Imports the circuit files |
 | `ha/mqtt-hassio.cfg` | ebusd Home Assistant integration config: stock ebusd 26.1 plus the changes below |
 
@@ -34,12 +33,18 @@ npm install
 npm run build          # tsp compile src/main.tsp -> out/ariston/*.csv
 ```
 
-The emitter is a fork, [andrein/ebus-typespec](https://github.com/andrein/ebus-typespec) branch
-`fix/condition-circuit-zz`, which has to be checked out and built (`npm ci && npm run build`) in `../ebus-typespec`.
-The released emitter writes the condition row for a message in the same circuit without the circuit, and ebusd then
-resolves `Zone1TemperatureRange` to the field-less `query.Zone1TemperatureRange`; the fork always writes the circuit
-and takes ZZ from the referenced message. It is a `file:` dependency because the package ships no built `dist` and a
-git dependency would install it unbuilt.
+The emitter is a fork, [andrein/ebus-typespec](https://github.com/andrein/ebus-typespec) branch `ariston`, which
+has to be checked out and built (`npm ci && npm run build`) in `../ebus-typespec`. It combines two changes to the
+released emitter:
+
+- `fix/condition-circuit-zz` ([john30/ebus-typespec#5](https://github.com/john30/ebus-typespec/pull/5)): the condition
+  row for a message in the same circuit names that circuit, and has no ZZ for a broadcast message. Without it, ebusd
+  resolves the temperature range condition by name in any circuit
+  ([john30/ebusd#1811](https://github.com/john30/ebusd/issues/1811)).
+- `feat/poll-broadcast-read`: a broadcast model with `@poll` is a polled read, so each `*Query` sits next to the
+  setting it refreshes. The released emitter turns every active broadcast model into a write and drops `@poll`.
+
+It is a `file:` dependency because the package ships no built `dist` and a git dependency would install it unbuilt.
 
 ## Mapping (ebusd CSV → TypeSpec)
 

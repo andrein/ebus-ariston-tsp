@@ -89,7 +89,7 @@ namespace Boiler {
     @out @divisor(10) @unit("°C") value: SIN;
   }
 
-  // The switch states are answers to the broadcast queries in fe.query.tsp, like the zone settings in zone.tsp; only
+  // The switch states are answers to the polled broadcast *Query reads, like the zone settings in zone.tsp; only
   // the value is kept.
   /** CH */
   @passive
@@ -100,6 +100,12 @@ namespace Boiler {
     @out _: skip2;
   }
 
+  /** CH query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x01, 0x01, 0x20)
+  model ChQuery {}
+
   /** DHW */
   @passive
   @zz(BROADCAST)
@@ -108,6 +114,12 @@ namespace Boiler {
     @out onoff: onoff;
     @out _: skip2;
   }
+
+  /** DHW query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x01, 0x02, 0x20)
+  model DhwQuery {}
 
   /** Auto function */
   @passive
@@ -118,6 +130,12 @@ namespace Boiler {
     @out _: skip2;
   }
 
+  /** Auto function query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x01, 0x05, 0x20)
+  model AutoFunctionQuery {}
+
   // 2.0.0
   /** DHW setpoint */
   @inherit(u, w)
@@ -125,6 +143,12 @@ namespace Boiler {
   model DhwSetpoint {
     value: dhw_setpoint;
   }
+
+  /** DHW setpoint query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x01, 0x61, 0x26)
+  model DhwSetpointQuery {}
 
   // 2.1.4
   /** Circulator type */

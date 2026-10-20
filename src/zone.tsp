@@ -8,8 +8,8 @@ namespace Ariston;
 
 // This boiler answers 2000 and 2001 reads of the zone settings with no data. The boiler (master 0x37) broadcasts each
 // one as value, min, max (fe 200e) when any master asks with fe 2001 02 <id>, and every panel edit goes out as
-// fe 2020 <id> <value>. fe.query.tsp polls those questions; the passive messages here decode the answers and keep
-// only the value. The last id byte is the zone (71 = zone 1, 72 = zone 2, ...).
+// fe 2020 <id> <value>. Each setting is followed by its polled *Query read, which asks that question; the passive
+// message decodes the answer and keeps only the value. The last id byte is the zone (71 = zone 1, 72 = zone 2, ...).
 // Zones are handled by the boiler itself, so like the heating circuits of other makers they are a name prefix in the
 // boiler circuit rather than a circuit of their own.
 namespace Boiler {
@@ -23,6 +23,12 @@ namespace Boiler {
     @out _: skip4;
   }
 
+  /** Zone 1 fixed flow temperature query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x01, 0x65, 0x71)
+  model Zone1FixedFlowTemperatureQuery {}
+
   // 4.2.0
   /** Zone 1 temperature range */
   @passive
@@ -33,6 +39,12 @@ namespace Boiler {
     @out _: skip2;
   }
 
+  /** Zone 1 temperature range query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x01, 0x00, 0x81)
+  model Zone1TemperatureRangeQuery {}
+
   // 4.2.1
   /** Zone 1 thermoregulation */
   @passive
@@ -42,6 +54,12 @@ namespace Boiler {
     @out value: thermoregulation;
     @out _: skip2;
   }
+
+  /** Zone 1 thermoregulation query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x01, 0xc0, 0x79)
+  model Zone1ThermoregulationQuery {}
 
   /** default *u, the boiler's answer to a query or a panel edit; data after the value is ignored */
   @passive
@@ -63,6 +81,12 @@ namespace Boiler {
     value: slope;
   }
 
+  /** Zone 1 slope query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x01, 0x6a, 0x71)
+  model Zone1SlopeQuery {}
+
   // 4.2.3
   /** Zone 1 offset */
   @inherit(u)
@@ -70,6 +94,12 @@ namespace Boiler {
   model Zone1Offset {
     value: offset;
   }
+
+  /** Zone 1 offset query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x01, 0x64, 0x71)
+  model Zone1OffsetQuery {}
 
   // The writes come in one variant per temperature range, so that the limits ebusd hands to Home Assistant follow
   // the range set on the boiler.
@@ -117,6 +147,12 @@ namespace Boiler {
     @out _: skip2;
   }
 
+  /** Zone 1 room influence query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x01, 0xc2, 0x79)
+  model Zone1RoomInfluenceQuery {}
+
   // 4.2.5
   /** Zone 1 maximum CH temperature */
   @passive
@@ -127,6 +163,12 @@ namespace Boiler {
     @out _: skip4;
   }
 
+  /** Zone 1 maximum CH temperature query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x01, 0x60, 0x71)
+  model Zone1MaxChTemperatureQuery {}
+
   // 4.2.6
   /** Zone 1 minimum CH temperature */
   @passive
@@ -136,6 +178,12 @@ namespace Boiler {
     @out @divisor(10) @unit("°C") value: SIN;
     @out _: skip4;
   }
+
+  /** Zone 1 minimum CH temperature query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x01, 0x61, 0x71)
+  model Zone1MinChTemperatureQuery {}
 
   // 8.3.0. Sent every ~25 s as three records (id, value, flag): 6047, 6197 and 6297. 6047 tracks 6197 but answers
   // its own queries with an unbounded range, and 6297 (58.0 °C) is unidentified, so only 6197 is decoded.
