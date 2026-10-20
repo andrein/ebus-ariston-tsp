@@ -22,7 +22,7 @@ Live readings are `@poll(1)`; diagnostics are `@poll(3)`. `ha/mqtt-hassio.cfg` d
 
 - `filter-name` is disabled: it matches Vaillant naming and would hide most of these messages.
 - the poll priority is part of `type_switch-by`, and priority 3 messages get `entity_category: diagnostic`.
-- entity names are the message comment instead of the message name.
+- entity names are the message comment instead of the message name, plus the field comment when there is one.
 - the device area is `Technical room`.
 - writes are published (`filter-direction = r|u|^w`) and any writable number becomes a `number` entity.
 

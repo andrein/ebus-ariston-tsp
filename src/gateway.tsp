@@ -3,6 +3,7 @@ import "./_templates.tsp";
 
 using Ebus;
 using Ebus.Num;
+using Ebus.Dtm;
 
 namespace Ariston;
 
@@ -62,6 +63,47 @@ namespace Gateway {
   model SwUpgradeStatus {
     @in _: skip;
     @in @values(Values_sw_upgrade_status) value: UCH;
+  }
+
+  // 4.8.0 to 4.8.2 on the boiler panel, which reads them from the gateway. 2001 reads answer with the value followed
+  // by the allowed min and max.
+  /** Pilot enable */
+  @poll(3)
+  @id(0x20, 0x01, 0x0b, 0x81)
+  model PilotEnable {
+    @in onoff: onoff;
+    @in _: skip2;
+  }
+
+  /** Learning quality */
+  @poll(3)
+  @id(0x20, 0x01, 0x69, 0xc0)
+  model LearningQuality {
+    @in value: SIN;
+    @in _: skip4;
+  }
+
+  /** Periodicity */
+  @poll(3)
+  @id(0x20, 0x01, 0x61, 0xc0)
+  model Periodicity {
+    @in value: SIN;
+    @in _: skip4;
+  }
+
+  // Broadcast by the gateway when holiday mode is set or cancelled in the Ariston Net app or portal; the boiler then
+  // drops the zone desired temperature to the antifreeze temperature. The end time (mm hh, 23:59 when set from the app)
+  // is skipped.
+  /** Holiday */
+  @passive
+  @zz(BROADCAST)
+  @id(0x20, 0x71)
+  model Holiday {
+    @out onoff: holiday;
+    @out _: skip2;
+
+    /** end */
+    @out date: HDA3;
   }
 }
 

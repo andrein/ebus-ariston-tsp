@@ -204,4 +204,66 @@ namespace Boiler {
   model Zone1HeatRequest {
     @out onoff: onoff;
   }
+
+  /** Zone 1 mode */
+  @passive
+  @zz(BROADCAST)
+  @id(0x20, 0x0e, 0xc6, 0x79)
+  model Zone1Mode {
+    @out value: zone_mode;
+    @out _: skip2;
+  }
+
+  /** Zone 1 mode query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x01, 0xc6, 0x79)
+  model Zone1ModeQuery {}
+
+  /** Zone 1 comfort temperature */
+  @passive
+  @zz(BROADCAST)
+  @id(0x20, 0x0e, 0x62, 0x71)
+  model Zone1ComfortTemperature {
+    @out @divisor(10) @unit("°C") value: SIN;
+    @out _: skip4;
+  }
+
+  /** Zone 1 comfort temperature query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x01, 0x62, 0x71)
+  model Zone1ComfortTemperatureQuery {}
+
+  /** Zone 1 reduced temperature */
+  @passive
+  @zz(BROADCAST)
+  @id(0x20, 0x0e, 0x63, 0x71)
+  model Zone1ReducedTemperature {
+    @out @divisor(10) @unit("°C") value: SIN;
+    @out _: skip4;
+  }
+
+  /** Zone 1 reduced temperature query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x01, 0x63, 0x71)
+  model Zone1ReducedTemperatureQuery {}
+
+  // The room temperature the zone currently aims for: comfort, reduced or antifreeze (holiday). It is read with the
+  // multi-id broadcast fe 2000 and answered as fe 200f <id> <value> <status>.
+  /** Zone 1 desired temperature */
+  @passive
+  @zz(BROADCAST)
+  @id(0x20, 0x0f, 0x69, 0x96)
+  model Zone1DesiredTemperature {
+    @out @divisor(10) @unit("°C") value: SIN;
+    @out _: skip;
+  }
+
+  /** Zone 1 desired temperature query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x00, 0x69, 0x96)
+  model Zone1DesiredTemperatureQuery {}
 }

@@ -110,3 +110,32 @@ scalar offset_high extends offset;
 @divisor(10) @unit("°C")
 @minValue(36) @maxValue(60) @step(1)
 scalar dhw_setpoint extends SIN;
+
+// Zone mode names as in the Ariston Net API (ZoneMode in github.com/fustom/python-ariston-api).
+@values(Values_zone_mode)
+scalar zone_mode extends UCH;
+
+enum Values_zone_mode {
+  off: 0,
+  manual_night: 1,
+  manual: 2,
+  time_program: 3,
+}
+
+@values(Values_comfort_function)
+scalar comfort_function extends UCH;
+
+enum Values_comfort_function {
+  disabled: 0,
+  time_based: 1,
+  always_active: 2,
+}
+
+// Only 0 and 3 have been seen: cancelled and set from the Ariston Net app.
+@values(Values_holiday)
+scalar holiday extends UCH;
+
+enum Values_holiday {
+  off: 0,
+  on: 3,
+}

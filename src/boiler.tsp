@@ -150,6 +150,52 @@ namespace Boiler {
   @id(0x20, 0x01, 0x61, 0x26)
   model DhwSetpointQuery {}
 
+  // 2.5.0
+  /** Comfort function */
+  @passive
+  @zz(BROADCAST)
+  @id(0x20, 0x0e, 0xc0, 0x28)
+  model ComfortFunction {
+    @out value: comfort_function;
+    @out _: skip2;
+  }
+
+  /** Comfort function query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x01, 0xc0, 0x28)
+  model ComfortFunctionQuery {}
+
+  /** DHW reduced temperature */
+  @passive
+  @zz(BROADCAST)
+  @id(0x20, 0x0e, 0x62, 0x26)
+  model DhwReducedTemperature {
+    @out @divisor(10) @unit("°C") value: SIN;
+    @out _: skip4;
+  }
+
+  /** DHW reduced temperature query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x01, 0x62, 0x26)
+  model DhwReducedTemperatureQuery {}
+
+  /** Antifreeze temperature */
+  @passive
+  @zz(BROADCAST)
+  @id(0x20, 0x0e, 0x64, 0x26)
+  model AntifreezeTemperature {
+    @out @divisor(10) @unit("°C") value: SIN;
+    @out _: skip4;
+  }
+
+  /** Antifreeze temperature query */
+  @poll(3)
+  @zz(BROADCAST)
+  @id(0x20, 0x01, 0x64, 0x26)
+  model AntifreezeTemperatureQuery {}
+
   // 2.1.4
   /** Circulator type */
   @poll(3)
