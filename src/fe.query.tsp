@@ -25,6 +25,11 @@ namespace Queries {
   @id(0x20, 0x01, 0x05, 0x20)
   model BoilerAutoFunction {}
 
+  /** Boiler DHW setpoint query */
+  @poll(3)
+  @id(0x20, 0x01, 0x61, 0x26)
+  model BoilerDhwSetpoint {}
+
   /** Zone 1 fixed flow temperature query */
   @poll(3)
   @id(0x20, 0x01, 0x65, 0x71)

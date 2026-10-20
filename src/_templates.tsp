@@ -105,3 +105,8 @@ scalar offset_low extends offset;
 
 @minValue(-14) @maxValue(14) @step(1)
 scalar offset_high extends offset;
+
+// The DHW setpoint range does not depend on any setting (2.0.0: 36 to 60), so the read can share the limits.
+@divisor(10) @unit("°C")
+@minValue(36) @maxValue(60) @step(1)
+scalar dhw_setpoint extends SIN;

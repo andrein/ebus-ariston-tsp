@@ -118,6 +118,14 @@ namespace Boiler {
     @out _: skip2;
   }
 
+  // 2.0.0
+  /** DHW setpoint */
+  @inherit(u, w)
+  @ext(0x61, 0x26)
+  model DhwSetpoint {
+    value: dhw_setpoint;
+  }
+
   // 2.1.4
   /** Circulator type */
   @poll(3)
