@@ -315,8 +315,8 @@ namespace Boiler {
     @in value: UIN;
   }
 
-  // 8.0.3
-  /** Lifetime */
+  // 8.0.3 "Boiler Life Time"
+  /** Power-on hours */
   @poll(3)
   @id(0x20, 0x00, 0x50, 0xd9)
   model BoilerLifetime {
@@ -342,8 +342,9 @@ namespace Boiler {
     @in value: UIN;
   }
 
-  // 8.0.6
-  /** CH flame detections */
+  // 8.0.6 "CH flame detection": burner starts. Together with the DHW ones they come to a little less than the
+  // ignition cycles (8.1.3), which also count attempts that did not light.
+  /** CH burner starts */
   @poll(3)
   @id(0x20, 0x00, 0x4e, 0xd2)
   model ChFlameDetections {
@@ -351,8 +352,8 @@ namespace Boiler {
     @in value: UIN;
   }
 
-  // 8.0.7
-  /** DHW flame detections */
+  // 8.0.7 "DHW flame detection"
+  /** DHW burner starts */
   @poll(3)
   @id(0x20, 0x00, 0x50, 0xd2)
   model DhwFlameDetections {
@@ -378,8 +379,8 @@ namespace Boiler {
     @in @unit("h") value: UIN;
   }
 
-  // 8.1.2
-  /** Flame faults */
+  // 8.1.2 "Number of Flame Faults"
+  /** Flame failures */
   @poll(3)
   @id(0x20, 0x00, 0x46, 0xd1)
   model FlameFaults {
