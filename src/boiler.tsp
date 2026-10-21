@@ -226,6 +226,15 @@ namespace Boiler {
     @in value: circulator_type;
   }
 
+  // 2.2.0
+  /** Soft ignition */
+  @poll(3)
+  @id(0x20, 0x00, 0x65, 0x29)
+  model SoftIgnition {
+    @in _: skip;
+    @in @unit("%") value: UIN;
+  }
+
   // 2.2.8
   /** Version */
   @poll(3)
@@ -242,6 +251,42 @@ namespace Boiler {
   model NominalPower {
     @in _: skip;
     @in @unit("kW") value: UIN;
+  }
+
+  // 2.3.1. The factory values of 2.3.1 to 2.3.4 depend on the model and gas type (manual, table summarising changes).
+  /** Adjustable maximum CH power */
+  @poll(3)
+  @id(0x20, 0x00, 0x66, 0x29)
+  model MaxChPowerAdjustable {
+    @in _: skip;
+    @in @unit("%") value: UIN;
+  }
+
+  // 2.3.2
+  /** DHW maximum power */
+  @poll(3)
+  @id(0x20, 0x00, 0x62, 0x29)
+  model DhwMaxPower {
+    @in _: skip;
+    @in @unit("%") value: UIN;
+  }
+
+  // 2.3.3
+  /** Minimum power */
+  @poll(3)
+  @id(0x20, 0x00, 0x64, 0x29)
+  model MinPower {
+    @in _: skip;
+    @in @unit("%") value: UIN;
+  }
+
+  // 2.3.4
+  /** CH maximum power */
+  @poll(3)
+  @id(0x20, 0x00, 0x63, 0x29)
+  model ChMaxPower {
+    @in _: skip;
+    @in @unit("%") value: UIN;
   }
 
   // 2.3.7
