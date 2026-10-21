@@ -10,7 +10,7 @@ emitter produces [ebusd](https://github.com/john30/ebusd) CSV message definition
 |------|----------|
 | `src/_templates.tsp` | Shared field types and value lists |
 | `src/boiler.tsp` | `Boiler` circuit (slave `0x3c`): live readings, status (also from its periodic broadcast), CH/DHW switches, thermoregulation (the AUTO button), DHW setpoint and comfort function, configuration, statistics, maintenance, serial number |
-| `src/zone.tsp` | Zone 1 messages in the `Boiler` circuit, prefixed `Zone1` (broadcast only): thermoregulation mode and curve (slope and offset write limits follow the temperature range), comfort, reduced and desired temperatures, fixed flow temperature (only while the zone uses it), mode, CH flow setpoint, heat request |
+| `src/zone.tsp` | Zone 1 messages in the `Boiler` circuit, prefixed `Zone1` (broadcast only): thermoregulation mode and curve (slope and offset write limits follow the temperature range), comfort, reduced, desired and set temperatures, mode, CH flow setpoint, heat request |
 | `src/gateway.tsp` | `Gateway` circuit (Ariston Net, slave `0x84`): Wi-Fi, internet time, connectivity, signal, activation, upgrade status, pilot settings, holiday, serial number |
 | `src/main.tsp` | Imports the circuit files |
 | `ha/mqtt-hassio.cfg` | ebusd Home Assistant integration config: stock ebusd 26.1 plus the changes below |
@@ -52,7 +52,7 @@ released emitter:
   setting it refreshes. The released emitter turns every active broadcast model into a write and drops `@poll`.
 - `fix/nested-namespace-conditions` ([john30/ebus-typespec#7](https://github.com/john30/ebus-typespec/pull/7)): a model
   gets its own conditions plus those of every enclosing namespace. The released emitter only uses the innermost ones,
-  so the fixed flow temperature write would lose its thermoregulation condition.
+  so a write in two nested conditional namespaces would lose the outer condition.
 
 It is a `file:` dependency because the package ships no built `dist` and a git dependency would install it unbuilt.
 
