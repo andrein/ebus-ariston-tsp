@@ -147,15 +147,15 @@ namespace Boiler {
   @id(0x20, 0x01, 0x02, 0x20)
   model DhwQuery {}
 
-  // The AUTO button on the front panel.
-  /** Auto function */
+  // The AUTO button on the front panel: switches thermoregulation on or off; 4.2.1 selects how it works.
+  /** Thermoregulation */
   @inherit(u, w)
   @ext(0x05, 0x20)
   model AutoFunction {
     onoff: onoff;
   }
 
-  /** Auto function query */
+  /** Thermoregulation query */
   @poll(3)
   @zz(BROADCAST)
   @id(0x20, 0x01, 0x05, 0x20)

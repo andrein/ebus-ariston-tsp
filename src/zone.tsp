@@ -69,7 +69,7 @@ namespace Boiler {
   model Zone1TemperatureRangeQuery {}
 
   // 4.2.1
-  /** Zone 1 thermoregulation */
+  /** Zone 1 thermoregulation mode */
   @passive
   @zz(BROADCAST)
   @id(0x20, 0x0e, 0xc0, 0x79)
@@ -78,7 +78,7 @@ namespace Boiler {
     @out _: skip2;
   }
 
-  /** Zone 1 thermoregulation query */
+  /** Zone 1 thermoregulation mode query */
   @poll(3)
   @zz(BROADCAST)
   @id(0x20, 0x01, 0xc0, 0x79)
