@@ -114,16 +114,16 @@ scalar offset_high extends offset;
 @minValue(36) @maxValue(60) @step(1)
 scalar dhw_setpoint extends SIN;
 
-// The zone set temperature limits follow the zone temperature range (the boiler answers 20 to 45 in the low range,
-// the manual gives 35 to 82 for the high range).
+// The limits of the zone flow temperatures (set, maximum and minimum CH) follow the zone temperature range: 20 to 45
+// in the low range (as the boiler answers), 35 to 82 in the high range (manual).
 @divisor(10) @unit("°C")
-scalar set_temperature extends SIN;
+scalar flow_temperature extends SIN;
 
 @minValue(20) @maxValue(45) @step(1)
-scalar set_temperature_low extends set_temperature;
+scalar flow_temperature_low extends flow_temperature;
 
 @minValue(35) @maxValue(82) @step(1)
-scalar set_temperature_high extends set_temperature;
+scalar flow_temperature_high extends flow_temperature;
 
 // The comfort temperature range does not depend on any setting (the boiler answers 10 to 30), so the read can share
 // the limits.

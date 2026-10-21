@@ -16,12 +16,10 @@ namespace Boiler {
   // 4.0.2 "T set Zone 1": the flow temperature the boiler heats to when thermoregulation (the AUTO button) is off or
   // the thermoregulation mode is fixed_flow_temperature. The panel's heating +/- buttons set it while AUTO is off.
   /** Zone 1 set temperature */
-  @passive
-  @zz(BROADCAST)
-  @id(0x20, 0x0e, 0x65, 0x71)
+  @inherit(u)
+  @ext(0x65, 0x71)
   model Zone1SetTemperature {
-    @out value: set_temperature;
-    @out _: skip4;
+    value: flow_temperature;
   }
 
   /** Zone 1 set temperature query */
@@ -29,26 +27,6 @@ namespace Boiler {
   @zz(BROADCAST)
   @id(0x20, 0x01, 0x65, 0x71)
   model Zone1SetTemperatureQuery {}
-
-  @condition(Zone1TemperatureRange.value, "0")
-  namespace Zone1SetLowTemperature {
-    /** Zone 1 set temperature */
-    @inherit(w)
-    @ext(0x65, 0x71)
-    model Zone1SetTemperature {
-      value: set_temperature_low;
-    }
-  }
-
-  @condition(Zone1TemperatureRange.value, "1")
-  namespace Zone1SetHighTemperature {
-    /** Zone 1 set temperature */
-    @inherit(w)
-    @ext(0x65, 0x71)
-    model Zone1SetTemperature {
-      value: set_temperature_high;
-    }
-  }
 
   // 4.2.0
   /** Zone 1 temperature range */
@@ -139,6 +117,27 @@ namespace Boiler {
     model Zone1Offset {
       value: offset_low;
     }
+
+    /** Zone 1 set temperature */
+    @inherit(w)
+    @ext(0x65, 0x71)
+    model Zone1SetTemperature {
+      value: flow_temperature_low;
+    }
+
+    /** Zone 1 maximum CH temperature */
+    @inherit(w)
+    @ext(0x60, 0x71)
+    model Zone1MaxChTemperature {
+      value: flow_temperature_low;
+    }
+
+    /** Zone 1 minimum CH temperature */
+    @inherit(w)
+    @ext(0x61, 0x71)
+    model Zone1MinChTemperature {
+      value: flow_temperature_low;
+    }
   }
 
   @condition(Zone1TemperatureRange.value, "1")
@@ -155,6 +154,27 @@ namespace Boiler {
     @ext(0x64, 0x71)
     model Zone1Offset {
       value: offset_high;
+    }
+
+    /** Zone 1 set temperature */
+    @inherit(w)
+    @ext(0x65, 0x71)
+    model Zone1SetTemperature {
+      value: flow_temperature_high;
+    }
+
+    /** Zone 1 maximum CH temperature */
+    @inherit(w)
+    @ext(0x60, 0x71)
+    model Zone1MaxChTemperature {
+      value: flow_temperature_high;
+    }
+
+    /** Zone 1 minimum CH temperature */
+    @inherit(w)
+    @ext(0x61, 0x71)
+    model Zone1MinChTemperature {
+      value: flow_temperature_high;
     }
   }
 
@@ -176,12 +196,10 @@ namespace Boiler {
 
   // 4.2.5
   /** Zone 1 maximum CH temperature */
-  @passive
-  @zz(BROADCAST)
-  @id(0x20, 0x0e, 0x60, 0x71)
+  @inherit(u)
+  @ext(0x60, 0x71)
   model Zone1MaxChTemperature {
-    @out @divisor(10) @unit("°C") value: SIN;
-    @out _: skip4;
+    value: flow_temperature;
   }
 
   /** Zone 1 maximum CH temperature query */
@@ -192,12 +210,10 @@ namespace Boiler {
 
   // 4.2.6
   /** Zone 1 minimum CH temperature */
-  @passive
-  @zz(BROADCAST)
-  @id(0x20, 0x0e, 0x61, 0x71)
+  @inherit(u)
+  @ext(0x61, 0x71)
   model Zone1MinChTemperature {
-    @out @divisor(10) @unit("°C") value: SIN;
-    @out _: skip4;
+    value: flow_temperature;
   }
 
   /** Zone 1 minimum CH temperature query */

@@ -26,10 +26,10 @@ Live readings are `@poll(1)`; diagnostics are `@poll(3)`. `ha/mqtt-hassio.cfg` d
 - the device area is `Technical room`.
 - writes are published (`filter-direction = r|u|^w`): a writable number becomes a `number`, an on/off a `switch`, and a
   value list a `select` entity. ebusd then leaves out the read-only entity of the same message, except while the write
-  is conditional and its condition is not resolved yet; the zone 1 slope, offset and set temperature therefore get no
-  sensor at all (`type_switch-u-number`).
-- zone 1 settings other than the offset and set temperature, the DHW reduced and frost protection temperatures, pump modulation, diverter valve and the ebusd global
-  entities are `entity_category: diagnostic`, matched by message name.
+  is conditional and its condition is not resolved yet; the zone 1 settings with range-dependent write limits
+  therefore get no sensor at all (`type_switch-u-number`).
+- zone 1 settings other than the offset and set temperature, the DHW reduced and frost protection temperatures, pump
+  modulation, diverter valve and the ebusd global entities are `entity_category: diagnostic`, matched by message name.
 - string fields are published only for the serial numbers.
 - an optional `type_icon` column in the type switch lists sets an entity icon (thermoregulation, CH, DHW).
 - scan results (`scan.<address>` circuits) are not published.
