@@ -9,7 +9,7 @@ emitter produces [ebusd](https://github.com/john30/ebusd) CSV message definition
 | File | Contents |
 |------|----------|
 | `src/_templates.tsp` | Shared field types and value lists |
-| `src/boiler.tsp` | `Boiler` circuit (slave `0x3c`): live readings, status (also from its periodic broadcast), CH/DHW switches, thermoregulation (the AUTO button), DHW setpoint and comfort function, configuration, statistics, maintenance, serial number |
+| `src/boiler.tsp` | `Boiler` circuit (slave `0x3c`): live readings, status (also from its periodic broadcast), CH/DHW switches, thermoregulation (the AUTO button), DHW setpoint and comfort mode, configuration, statistics, maintenance, serial number |
 | `src/zone.tsp` | Zone 1 messages in the `Boiler` circuit, prefixed `Zone1` (broadcast only): thermoregulation mode and curve (slope and offset write limits follow the temperature range), comfort, reduced, desired and set temperatures, mode, CH flow setpoint, heat request |
 | `src/gateway.tsp` | `Gateway` circuit (Ariston Net, slave `0x84`): Wi-Fi, internet time, connectivity, signal, activation, upgrade status, pilot settings, holiday, serial number |
 | `src/main.tsp` | Imports the circuit files |

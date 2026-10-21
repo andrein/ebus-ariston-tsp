@@ -173,15 +173,15 @@ namespace Boiler {
   @id(0x20, 0x01, 0x61, 0x26)
   model DhwSetpointQuery {}
 
-  // 2.5.0
-  /** DHW comfort function */
+  // 2.5.0 "COMFORT Function", also the COMFORT button on the front panel
+  /** DHW comfort mode */
   @inherit(u, w)
   @ext(0xc0, 0x28)
   model ComfortFunction {
     value: comfort_function;
   }
 
-  /** DHW comfort function query */
+  /** DHW comfort mode query */
   @poll(3)
   @zz(BROADCAST)
   @id(0x20, 0x01, 0xc0, 0x28)
