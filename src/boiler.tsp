@@ -117,13 +117,13 @@ namespace Boiler {
 
   // The switch states are answers to the polled broadcast *Query reads, like the zone settings in zone.tsp; only
   // the value is kept.
+  // CH and DHW are independent on the boiler. The panel only offers combinations of them: MODE switches between winter
+  // (CH and DHW on) and summer (CH off, DHW on), ON/OFF turns both off and back to the previous mode.
   /** CH */
-  @passive
-  @zz(BROADCAST)
-  @id(0x20, 0x0e, 0x01, 0x20)
+  @inherit(u, w)
+  @ext(0x01, 0x20)
   model Ch {
-    @out onoff: onoff;
-    @out _: skip2;
+    onoff: onoff;
   }
 
   /** CH query */
@@ -133,12 +133,10 @@ namespace Boiler {
   model ChQuery {}
 
   /** DHW */
-  @passive
-  @zz(BROADCAST)
-  @id(0x20, 0x0e, 0x02, 0x20)
+  @inherit(u, w)
+  @ext(0x02, 0x20)
   model Dhw {
-    @out onoff: onoff;
-    @out _: skip2;
+    onoff: onoff;
   }
 
   /** DHW query */
