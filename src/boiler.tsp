@@ -19,6 +19,20 @@ namespace Boiler {
     @in value: boiler_status;
   }
 
+  // The boiler also broadcasts the status about every 5 s, as the first of three records (id, value, flag), so short
+  // burns between two polls show up too. ebusd keeps a read and a passive message of the same name apart; both update
+  // the same entity.
+  namespace Broadcast {
+    /** Status */
+    @passive
+    @qq(0x37)
+    @zz(BROADCAST)
+    @id(0x20, 0x10, 0xc0, 0x4b)
+    model Status {
+      @out value: boiler_status;
+    }
+  }
+
   /** Flame */
   @poll(1)
   @id(0x20, 0x00, 0x0e, 0x11)
