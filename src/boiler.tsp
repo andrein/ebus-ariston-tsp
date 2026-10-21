@@ -176,14 +176,14 @@ namespace Boiler {
   model DhwSetpointQuery {}
 
   // 2.5.0
-  /** Comfort function */
+  /** DHW comfort function */
   @inherit(u, w)
   @ext(0xc0, 0x28)
   model ComfortFunction {
     value: comfort_function;
   }
 
-  /** Comfort function query */
+  /** DHW comfort function query */
   @poll(3)
   @zz(BROADCAST)
   @id(0x20, 0x01, 0xc0, 0x28)
