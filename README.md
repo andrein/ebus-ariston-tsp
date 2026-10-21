@@ -31,6 +31,8 @@ Live readings are `@poll(1)`; diagnostics are `@poll(3)`. `ha/mqtt-hassio.cfg` d
 - zone 1 settings other than the offset and set temperature, the DHW reduced and frost protection temperatures, pump
   modulation, diverter valve and the ebusd global entities are `entity_category: diagnostic`, matched by message name.
 - string fields are published only for the serial numbers.
+- the zone 1 set temperature and offset are available in HA only while the thermoregulation uses them (HA MQTT
+  availability on the thermoregulation and thermoregulation mode topics), selected by `type_sub`.
 - an optional `type_icon` column in the type switch lists sets an entity icon (thermoregulation, CH, DHW).
 - scan results (`scan.<address>` circuits) are not published.
 - the adapter firmware update check sits on the ebusd device instead of a device of its own.
