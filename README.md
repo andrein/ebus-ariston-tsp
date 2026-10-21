@@ -28,8 +28,9 @@ Live readings are `@poll(1)`; diagnostics are `@poll(3)`. `ha/mqtt-hassio.cfg` d
   value list a `select` entity. ebusd then leaves out the read-only entity of the same message, except while the write
   is conditional and its condition is not resolved yet; the zone 1 settings with range-dependent write limits
   therefore get no sensor at all (`type_switch-u-number`).
-- zone 1 settings other than the offset and set temperature, the DHW reduced and frost protection temperatures, pump
-  modulation, diverter valve and the ebusd global entities are `entity_category: diagnostic`, matched by message name.
+- zone 1 settings other than the offset, set and comfort temperatures, the DHW reduced and frost protection
+  temperatures, pump modulation, diverter valve and the ebusd global entities are `entity_category: diagnostic`,
+  matched by message name.
 - string fields are published only for the serial numbers.
 - the zone 1 set temperature, slope, offset and comfort temperature are available in HA only while the thermoregulation uses
   them (HA MQTT availability on the thermoregulation and thermoregulation mode topics), selected by `type_sub`.
