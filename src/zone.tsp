@@ -13,21 +13,44 @@ namespace Ariston;
 // Zones are handled by the boiler itself, so like the heating circuits of other makers they are a name prefix in the
 // boiler circuit rather than a circuit of their own.
 namespace Boiler {
-  // 4.0.2, used only when thermoregulation is fixed_flow_temperature
-  /** Zone 1 fixed flow temperature */
-  @passive
-  @zz(BROADCAST)
-  @id(0x20, 0x0e, 0x65, 0x71)
-  model Zone1FixedFlowTemperature {
-    @out @divisor(10) @unit("°C") value: SIN;
-    @out _: skip4;
-  }
+  // 4.0.2, used only when thermoregulation is fixed_flow_temperature, so it is only read and published then.
+  @condition(Zone1Thermoregulation.value, "0")
+  namespace Zone1FixedFlow {
+    /** Zone 1 fixed flow temperature */
+    @passive
+    @zz(BROADCAST)
+    @id(0x20, 0x0e, 0x65, 0x71)
+    model Zone1FixedFlowTemperature {
+      @out value: fixed_flow_temperature;
+      @out _: skip4;
+    }
 
-  /** Zone 1 fixed flow temperature query */
-  @poll(3)
-  @zz(BROADCAST)
-  @id(0x20, 0x01, 0x65, 0x71)
-  model Zone1FixedFlowTemperatureQuery {}
+    /** Zone 1 fixed flow temperature query */
+    @poll(3)
+    @zz(BROADCAST)
+    @id(0x20, 0x01, 0x65, 0x71)
+    model Zone1FixedFlowTemperatureQuery {}
+
+    @condition(Zone1TemperatureRange.value, "0")
+    namespace Zone1FixedFlowLowTemperature {
+      /** Zone 1 fixed flow temperature */
+      @inherit(w)
+      @ext(0x65, 0x71)
+      model Zone1FixedFlowTemperature {
+        value: fixed_flow_temperature_low;
+      }
+    }
+
+    @condition(Zone1TemperatureRange.value, "1")
+    namespace Zone1FixedFlowHighTemperature {
+      /** Zone 1 fixed flow temperature */
+      @inherit(w)
+      @ext(0x65, 0x71)
+      model Zone1FixedFlowTemperature {
+        value: fixed_flow_temperature_high;
+      }
+    }
+  }
 
   // 4.2.0
   /** Zone 1 temperature range */
@@ -220,13 +243,13 @@ namespace Boiler {
   @id(0x20, 0x01, 0xc6, 0x79)
   model Zone1ModeQuery {}
 
+  // The room setpoint of zone 1; it also shifts the outdoor temperature curve. An Ariston room sensor writes it the
+  // same way when its setpoint is changed.
   /** Zone 1 comfort temperature */
-  @passive
-  @zz(BROADCAST)
-  @id(0x20, 0x0e, 0x62, 0x71)
+  @inherit(u, w)
+  @ext(0x62, 0x71)
   model Zone1ComfortTemperature {
-    @out @divisor(10) @unit("°C") value: SIN;
-    @out _: skip4;
+    value: comfort_temperature;
   }
 
   /** Zone 1 comfort temperature query */

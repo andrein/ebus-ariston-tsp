@@ -114,6 +114,23 @@ scalar offset_high extends offset;
 @minValue(36) @maxValue(60) @step(1)
 scalar dhw_setpoint extends SIN;
 
+// The fixed flow temperature limits follow the zone temperature range (the boiler answers 20 to 45 in the low range,
+// the manual gives 35 to 82 for the high range).
+@divisor(10) @unit("°C")
+scalar fixed_flow_temperature extends SIN;
+
+@minValue(20) @maxValue(45) @step(1)
+scalar fixed_flow_temperature_low extends fixed_flow_temperature;
+
+@minValue(35) @maxValue(82) @step(1)
+scalar fixed_flow_temperature_high extends fixed_flow_temperature;
+
+// The comfort temperature range does not depend on any setting (the boiler answers 10 to 30), so the read can share
+// the limits.
+@divisor(10) @unit("°C")
+@minValue(10) @maxValue(30) @step(0.5)
+scalar comfort_temperature extends SIN;
+
 // Zone mode names as in the Ariston Net API (ZoneMode in github.com/fustom/python-ariston-api).
 @values(Values_zone_mode)
 scalar zone_mode extends UCH;

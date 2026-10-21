@@ -147,13 +147,12 @@ namespace Boiler {
   @id(0x20, 0x01, 0x02, 0x20)
   model DhwQuery {}
 
+  // The AUTO button on the front panel.
   /** Auto function */
-  @passive
-  @zz(BROADCAST)
-  @id(0x20, 0x0e, 0x05, 0x20)
+  @inherit(u, w)
+  @ext(0x05, 0x20)
   model AutoFunction {
-    @out onoff: onoff;
-    @out _: skip2;
+    onoff: onoff;
   }
 
   /** Auto function query */
@@ -178,12 +177,10 @@ namespace Boiler {
 
   // 2.5.0
   /** Comfort function */
-  @passive
-  @zz(BROADCAST)
-  @id(0x20, 0x0e, 0xc0, 0x28)
+  @inherit(u, w)
+  @ext(0xc0, 0x28)
   model ComfortFunction {
-    @out value: comfort_function;
-    @out _: skip2;
+    value: comfort_function;
   }
 
   /** Comfort function query */
