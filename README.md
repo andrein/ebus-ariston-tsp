@@ -9,9 +9,9 @@ emitter produces [ebusd](https://github.com/john30/ebusd) CSV message definition
 | File | Contents |
 |------|----------|
 | `src/_templates.tsp` | Shared field types and value lists |
-| `src/boiler.tsp` | `Boiler` circuit (slave `0x3c`): live readings, CH/DHW/auto switches, configuration, statistics, maintenance |
-| `src/zone.tsp` | Zone 1 messages in the `Boiler` circuit, prefixed `Zone1` (broadcast only): thermoregulation settings (slope and offset write limits follow the temperature range), CH flow setpoint, heat request |
-| `src/gateway.tsp` | `Gateway` circuit (Ariston Net, slave `0x84`): Wi-Fi, internet time, connectivity, signal, activation, upgrade status |
+| `src/boiler.tsp` | `Boiler` circuit (slave `0x3c`): live readings, status (also from its periodic broadcast), CH/DHW switches, thermoregulation (the AUTO button), DHW setpoint and comfort function, configuration, statistics, maintenance, serial number |
+| `src/zone.tsp` | Zone 1 messages in the `Boiler` circuit, prefixed `Zone1` (broadcast only): thermoregulation mode and curve (slope and offset write limits follow the temperature range), comfort, reduced and desired temperatures, fixed flow temperature (only while the zone uses it), mode, CH flow setpoint, heat request |
+| `src/gateway.tsp` | `Gateway` circuit (Ariston Net, slave `0x84`): Wi-Fi, internet time, connectivity, signal, activation, upgrade status, pilot settings, holiday, serial number |
 | `src/main.tsp` | Imports the circuit files |
 | `ha/mqtt-hassio.cfg` | ebusd Home Assistant integration config: stock ebusd 26.1 plus the changes below |
 
@@ -24,7 +24,14 @@ Live readings are `@poll(1)`; diagnostics are `@poll(3)`. `ha/mqtt-hassio.cfg` d
 - the poll priority is part of `type_switch-by`, and priority 3 messages get `entity_category: diagnostic`.
 - entity names are the message comment instead of the message name, plus the field comment when there is one.
 - the device area is `Technical room`.
-- writes are published (`filter-direction = r|u|^w`) and any writable number becomes a `number` entity.
+- writes are published (`filter-direction = r|u|^w`): a writable number becomes a `number`, an on/off a `switch`, and a
+  value list a `select` entity. ebusd then leaves out the read-only entity of the same message.
+- zone 1 settings, the DHW reduced and antifreeze temperatures, pump modulation, diverter valve and the ebusd global
+  entities are `entity_category: diagnostic`, matched by message name.
+- string fields are published only for the serial numbers.
+- an optional `type_icon` column in the type switch lists sets an entity icon (thermoregulation).
+- scan results (`scan.<address>` circuits) are not published.
+- the adapter firmware update check sits on the ebusd device instead of a device of its own.
 
 ## Build
 
@@ -34,7 +41,7 @@ npm run build          # tsp compile src/main.tsp -> out/ariston/*.csv
 ```
 
 The emitter is a fork, [andrein/ebus-typespec](https://github.com/andrein/ebus-typespec) branch `ariston`, which
-has to be checked out and built (`npm ci && npm run build`) in `../ebus-typespec`. It combines two changes to the
+has to be checked out and built (`npm ci && npm run build`) in `../ebus-typespec`. It combines three changes to the
 released emitter:
 
 - `fix/condition-circuit-zz` ([john30/ebus-typespec#5](https://github.com/john30/ebus-typespec/pull/5)): the condition
@@ -43,6 +50,9 @@ released emitter:
   ([john30/ebusd#1811](https://github.com/john30/ebusd/issues/1811)).
 - `feat/poll-broadcast-read` ([john30/ebus-typespec#6](https://github.com/john30/ebus-typespec/pull/6)): a broadcast model with `@poll` is a polled read, so each `*Query` sits next to the
   setting it refreshes. The released emitter turns every active broadcast model into a write and drops `@poll`.
+- `fix/nested-namespace-conditions` ([john30/ebus-typespec#7](https://github.com/john30/ebus-typespec/pull/7)): a model
+  gets its own conditions plus those of every enclosing namespace. The released emitter only uses the innermost ones,
+  so the fixed flow temperature write would lose its thermoregulation condition.
 
 It is a `file:` dependency because the package ships no built `dist` and a git dependency would install it unbuilt.
 
@@ -65,7 +75,7 @@ An ebusd row is `type,circuit,name,comment,QQ,ZZ,PBSB,ID, [field]*`, where a fie
 The generated CSV is validated with ebusd's own parser:
 
 ```sh
-ebusd --checkconfig --configpath=out/ariston                 # loads all 66 messages, 0 errors
+ebusd --checkconfig --configpath=out/ariston                 # loads all 95 messages, 0 errors
 ebusd --checkconfig --dumpconfig=csv --configpath=out/ariston # normalized message dump
 ```
 
@@ -86,8 +96,9 @@ integration config from `/config/mqtt-hassio.cfg` (`--mqttint`), with `--mqtttop
 ## Emitter naming notes
 
 1. Message and circuit names are PascalCased (`ChFlowTemperature`, `Boiler`); MQTT topics and unique ids follow them.
-2. A datapoint read with `20 00` and written with `20 20` has to be two models with distinct names, but the HA
-   switch sends its command to the read's name. Writes are therefore left out for now.
+2. A setting answered with `20 0e` and written with `20 20` shares one name through `@inherit(u, w)` bases, so HA gets
+   one entity that reads and writes it. A datapoint read directly with `20 00` cannot share its name with a write, and
+   the HA entity sends its command to the read's name, so the gateway's writes are left out for now.
 3. Value labels use underscores (`heating_hot_water`) since TypeSpec enum members must be identifiers.
 4. The emitter writes a header row, `*r`/`*u` default lines and an explicit `level` column; broadcasts emit as `u`.
 
