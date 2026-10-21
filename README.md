@@ -10,7 +10,7 @@ emitter produces [ebusd](https://github.com/john30/ebusd) CSV message definition
 |------|----------|
 | `src/_templates.tsp` | Shared field types and value lists |
 | `src/boiler.tsp` | `Boiler` circuit (slave `0x3c`): live readings, status (also from its periodic broadcast), CH/DHW switches, thermoregulation (the AUTO button), DHW setpoint and comfort mode, configuration, statistics, maintenance, serial number |
-| `src/zone.tsp` | Zone 1 messages in the `Boiler` circuit, prefixed `Zone1` (broadcast only): thermoregulation mode and curve (slope and offset write limits follow the temperature range), comfort, reduced, desired and set temperatures, mode, CH flow setpoint, heat request |
+| `src/zone.tsp` | Zone 1 messages in the `Boiler` circuit, prefixed `Zone1` (broadcast only): thermoregulation mode and curve (slope and offset write limits follow the temperature range), comfort, reduced, target and set temperatures, mode, CH flow setpoint, heat request |
 | `src/gateway.tsp` | `Gateway` circuit (Ariston Net, slave `0x84`): Wi-Fi, internet time, connectivity, signal, activation, upgrade status, pilot settings, holiday, serial number |
 | `src/main.tsp` | Imports the circuit files |
 | `ha/mqtt-hassio.cfg` | ebusd Home Assistant integration config: stock ebusd 26.1 plus the changes below |
@@ -26,7 +26,7 @@ Live readings are `@poll(1)`; diagnostics are `@poll(3)`. `ha/mqtt-hassio.cfg` d
 - the device area is `Technical room`.
 - writes are published (`filter-direction = r|u|^w`): a writable number becomes a `number`, an on/off a `switch`, and a
   value list a `select` entity. ebusd then leaves out the read-only entity of the same message.
-- zone 1 settings, the DHW reduced and antifreeze temperatures, pump modulation, diverter valve and the ebusd global
+- zone 1 settings, the DHW reduced and frost protection temperatures, pump modulation, diverter valve and the ebusd global
   entities are `entity_category: diagnostic`, matched by message name.
 - string fields are published only for the serial numbers.
 - an optional `type_icon` column in the type switch lists sets an entity icon (thermoregulation, CH, DHW).

@@ -271,9 +271,9 @@ namespace Boiler {
   @id(0x20, 0x01, 0x63, 0x71)
   model Zone1ReducedTemperatureQuery {}
 
-  // The room temperature the zone currently aims for: comfort, reduced or antifreeze (holiday). It is read with the
+  // The room temperature the zone currently aims for: comfort, reduced or frost protection (holiday). It is read with the
   // multi-id broadcast fe 2000 and answered as fe 200f <id> <value> <status>.
-  /** Zone 1 desired temperature */
+  /** Zone 1 target temperature */
   @passive
   @zz(BROADCAST)
   @id(0x20, 0x0f, 0x69, 0x96)
@@ -282,7 +282,7 @@ namespace Boiler {
     @out _: skip;
   }
 
-  /** Zone 1 desired temperature query */
+  /** Zone 1 target temperature query */
   @poll(3)
   @zz(BROADCAST)
   @id(0x20, 0x00, 0x69, 0x96)

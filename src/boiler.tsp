@@ -202,7 +202,7 @@ namespace Boiler {
   @id(0x20, 0x01, 0x62, 0x26)
   model DhwReducedTemperatureQuery {}
 
-  /** Antifreeze temperature */
+  /** Frost protection temperature */
   @passive
   @zz(BROADCAST)
   @id(0x20, 0x0e, 0x64, 0x26)
@@ -211,7 +211,7 @@ namespace Boiler {
     @out _: skip4;
   }
 
-  /** Antifreeze temperature query */
+  /** Frost protection temperature query */
   @poll(3)
   @zz(BROADCAST)
   @id(0x20, 0x01, 0x64, 0x26)
@@ -253,8 +253,8 @@ namespace Boiler {
     @in @unit("min") value: UCH;
   }
 
-  // 2.4.1
-  /** Warning pressure */
+  // 2.4.1 "Warning Pressure"
+  /** Low pressure warning threshold */
   @poll(3)
   @id(0x20, 0x00, 0xc1, 0x2a)
   model WarningPressure {

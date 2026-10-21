@@ -92,7 +92,7 @@ namespace Gateway {
   }
 
   // Broadcast by the gateway when holiday mode is set or cancelled in the Ariston Net app or portal; the boiler then
-  // drops the zone desired temperature to the antifreeze temperature. The end time (mm hh, 23:59 when set from the app)
+  // drops the zone target temperature to the frost protection temperature. The end time (mm hh, 23:59 when set from the app)
   // is skipped.
   /** Holiday */
   @passive
