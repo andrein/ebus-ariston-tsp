@@ -35,6 +35,9 @@ scalar skip extends IGN;
 @maxLength(2)
 scalar skip2 extends IGN;
 
+@maxLength(3)
+scalar skip3 extends IGN;
+
 @maxLength(4)
 scalar skip4 extends IGN;
 
@@ -43,6 +46,14 @@ scalar skip5 extends IGN;
 
 @maxLength(12)
 scalar serial_number extends STR;
+
+@values(Values_day_night)
+scalar day_night extends BI7;
+
+enum Values_day_night {
+  day: 0,
+  night: 1,
+}
 
 @values(Values_temperature_range)
 scalar temperature_range extends UCH;

@@ -11,7 +11,7 @@ emitter produces [ebusd](https://github.com/john30/ebusd) CSV message definition
 | `src/_templates.tsp` | Shared field types and value lists |
 | `src/boiler.tsp` | `Boiler` circuit (slave `0x3c`): live readings, status (also from its periodic broadcast), CH/DHW switches, thermoregulation (the AUTO button), DHW setpoint and comfort mode, configuration and power settings, statistics, maintenance, serial number |
 | `src/zone.tsp` | Zone 1 messages in the `Boiler` circuit, prefixed `Zone1` (broadcast only): thermoregulation mode and curve (slope and offset write limits follow the temperature range), comfort, reduced, target and set temperatures, mode, CH flow setpoint, heat request |
-| `src/gateway.tsp` | `Gateway` circuit (Ariston Net, slave `0x84`): Wi-Fi, internet time, connectivity, signal, activation, upgrade status, pilot settings, holiday, serial number |
+| `src/gateway.tsp` | `Gateway` circuit (Ariston Net, slave `0x84`): Wi-Fi, internet time, connectivity, signal, activation, upgrade status, pilot settings, holiday, internet weather (outdoor temperature, day or night), serial number |
 | `src/main.tsp` | Imports the circuit files |
 | `ha/mqtt-hassio.cfg` | ebusd Home Assistant integration config: stock ebusd 26.1 plus the changes below |
 
@@ -80,7 +80,7 @@ An ebusd row is `type,circuit,name,comment,QQ,ZZ,PBSB,ID, [field]*`, where a fie
 The generated CSV is validated with ebusd's own parser:
 
 ```sh
-ebusd --checkconfig --configpath=out/ariston                 # loads all 106 messages, 0 errors
+ebusd --checkconfig --configpath=out/ariston                 # loads all 107 messages, 0 errors
 ebusd --checkconfig --dumpconfig=csv --configpath=out/ariston # normalized message dump
 ```
 

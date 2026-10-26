@@ -106,6 +106,24 @@ namespace Gateway {
     @out date: HDA3;
   }
 
+  // Broadcast each time the gateway fetches the weather from the internet (about every 80-90 min), as two records
+  // (id, value, flag): 7617 the outdoor temperature and c19a, whose top bit is set from sunset to sunrise. The lower
+  // bits of c19a change with the weather condition; their meaning is not confirmed, so they are left out.
+  /** Internet weather */
+  @passive
+  @qq(0x7f)
+  @zz(BROADCAST)
+  @id(0x20, 0x10, 0x76, 0x17)
+  model InternetWeather {
+    /** outdoor temperature */
+    @out @divisor(10) @unit("°C") temperature: SIN;
+
+    @out _: skip3;
+
+    /** day or night */
+    @out daylight: day_night;
+  }
+
   // Broadcast only while the bus is enumerated (see the boiler's serial number).
   /** Serial number */
   @passive
