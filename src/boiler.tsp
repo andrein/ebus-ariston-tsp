@@ -76,10 +76,10 @@ namespace Boiler {
     @in @divisor(10) @unit("kW") value: UIN;
   }
 
-  // 8.2.4
+  // 8.2.4. The panel shows 1 for heating and 0 for hot water; the bus has 1 and 2 (tap test 2026-10-28).
   /** Diverter valve */
   @poll(1)
-  @id(0x20, 0x00, 0xc0, 0x12)
+  @id(0x20, 0x00, 0xc0, 0x00)
   model DiverterValve {
     @in _: skip;
     @in value: diverter_valve;
@@ -378,7 +378,8 @@ namespace Boiler {
     @in @unit("h") value: UIN;
   }
 
-  // 8.0.5
+  // 8.0.5. This and the other counters are sent as 16 bits only: past 65535 they restart from 0 while the panel
+  // keeps counting (fan cycles 102300 on the panel, 36766 on the bus on 2026-10-28).
   /** Fan cycles */
   @poll(3)
   @id(0x20, 0x00, 0x4c, 0xd2)

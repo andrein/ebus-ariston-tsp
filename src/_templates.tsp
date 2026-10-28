@@ -93,8 +93,8 @@ enum Values_boiler_version {
 scalar diverter_valve extends UCH;
 
 enum Values_diverter_valve {
-  dhw: 0,
   ch: 1,
+  dhw: 2,
 }
 
 // The write limits follow the zone temperature range (4.2.0): slope 0.2 to 1.0 and offset -7 to +7 for low
