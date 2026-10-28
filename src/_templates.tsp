@@ -68,7 +68,7 @@ scalar thermoregulation extends UCH;
 
 enum Values_thermoregulation {
   fixed_flow_temperature: 0,
-  basic_thermoregulation: 1,
+  on_off_devices: 1,
   room_temp_only: 2,
   outdoor_temp_only: 3,
   room_and_outdoor_temp: 4,
