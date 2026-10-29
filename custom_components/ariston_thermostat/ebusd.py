@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import asyncio
+from collections import deque
 from collections.abc import Callable
 import logging
+import time
 
-from .protocol import StreamLine
+from .protocol import Frame, StreamLine
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -17,6 +19,7 @@ CONNECT_TIMEOUT = 10
 IDLE_TIMEOUT = 120
 # A send without a message: refused as invalid when hex sending is enabled, as not authorized otherwise. Never sent.
 _HEX_PROBE = "-n"
+_LOST_SUFFIX = " messages lost"
 
 
 class StreamUnsupported(ConnectionError):
@@ -45,7 +48,7 @@ async def check(host: str, port: int) -> None:
         async with asyncio.timeout(CONNECT_TIMEOUT):
             while raw := await reader.readline():
                 text = raw.decode(errors="replace").strip()
-                if text.startswith(f"{_HEX_PROBE}:"):
+                if text.startswith("ERR: ") and not text.endswith(_LOST_SUFFIX):
                     if text.endswith("not authorized"):
                         raise HexDisabled("hex sending disabled")
                     return
@@ -72,6 +75,9 @@ class EbusdStream:
         self._on_connection = on_connection
         self._writer: asyncio.StreamWriter | None = None
         self._task: asyncio.Task[None] | None = None
+        # The messages sent whose outcome is not known yet, as ebusd will print them. ebusd shows a sent message on the
+        # stream, and an error only once all messages sent earlier are shown, so an error belongs to the oldest one.
+        self._sent: deque[str] = deque()
 
     @property
     def connected(self) -> bool:
@@ -90,11 +96,15 @@ class EbusdStream:
             self._task = None
 
     def send(self, message: str) -> bool:
-        """Queue a message given as ZZPBSBNN[DD]*; its outcome arrives as a stream line."""
+        """Queue a message given as -s QQ ZZPBSBNN[DD]*; it arrives as a stream line once sent, or as a failure."""
         if self._writer is None or self._writer.is_closing():
             _LOGGER.debug("not connected, dropped %s", message)
             return False
+        option, source, data = message.lower().split()
+        if option != "-s":
+            raise ValueError(f"no source address in {message}")
         self._writer.write(f"{message}\n".encode())
+        self._sent.append(source + data)
         return True
 
     async def _run(self) -> None:
@@ -125,6 +135,7 @@ class EbusdStream:
 
     async def _handshake(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter) -> None:
         await _start_stream(reader, writer)
+        self._sent.clear()
         self._writer = writer
         self._on_connection(True)
 
@@ -134,13 +145,31 @@ class EbusdStream:
             if not text:
                 continue
             try:
-                if line := StreamLine.parse(text):
-                    self._on_line(line)
-                elif text.startswith("ERR: ") and text.endswith(" messages lost"):
-                    _LOGGER.warning("ebusd direct stream: %s", text)
-                    self._on_gap()
-                else:
-                    self._on_rejected(text)
+                self._handle(text, time.monotonic())
             except Exception:
                 _LOGGER.exception("handling %s failed", text)
         raise ConnectionError("closed by ebusd")
+
+    def _handle(self, text: str, now: float) -> None:
+        if text.startswith("ERR: "):
+            if text.endswith(_LOST_SUFFIX):
+                _LOGGER.warning("ebusd direct stream: %s", text)
+                # Our messages may be among the lost ones, so no error can be matched to a message any more.
+                self._sent.clear()
+                self._on_gap()
+            elif self._sent:
+                self._on_line(StreamLine(now, "e", Frame.parse(self._sent.popleft()), text))
+            else:
+                self._on_rejected(text)
+            return
+        master = text.split(" ", 1)[0]
+        try:
+            frame = Frame.parse(master)
+        except ValueError:
+            _LOGGER.debug("ignored %s", text)
+            return
+        if master in self._sent:
+            self._sent.remove(master)
+            self._on_line(StreamLine(now, "s", frame))
+        else:
+            self._on_line(StreamLine(now, "r", frame))

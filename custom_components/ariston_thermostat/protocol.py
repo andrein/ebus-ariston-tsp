@@ -57,26 +57,12 @@ class Frame:
 
 @dataclass(frozen=True)
 class StreamLine:
-    """A line from ebusd's direct stream mode."""
+    """A message from ebusd's direct stream mode, or the error of one we sent."""
 
     timestamp: float
-    kind: str  # r received, s sent, a answered, e send failed
+    kind: str  # r received, s sent by us, e send failed
     frame: Frame
     error: str | None = None
-
-    @classmethod
-    def parse(cls, line: str) -> StreamLine | None:
-        """Parse "SECONDS.MILLIS KIND HEX[ SLAVE| ERR: ...]", or None for any other line."""
-        parts = line.split(" ", 3)
-        if len(parts) < 3 or parts[1] not in ("r", "s", "a", "e"):
-            return None
-        try:
-            timestamp = float(parts[0])
-            frame = Frame.parse(parts[2])
-        except ValueError:
-            return None
-        error = parts[3] if parts[1] == "e" and len(parts) > 3 else None
-        return cls(timestamp, parts[1], frame, error)
 
 
 # Each nibble of an eBUS master address is one of these.

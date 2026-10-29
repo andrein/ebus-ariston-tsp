@@ -30,7 +30,7 @@ class Bus:
         self.delays[message] = delay
 
     def receive(self, frame, now, timestamp=1000.0, kind="r"):
-        self.sensor.on_line(StreamLine.parse(f"{timestamp:.3f} {kind} {frame}"), now)
+        self.sensor.on_line(StreamLine(timestamp, kind, protocol.Frame.parse(frame)), now)
 
 
 ADDRESS_CAST = protocol.address_cast(0x75)

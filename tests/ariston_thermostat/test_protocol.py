@@ -12,7 +12,6 @@ from protocol_frames import (
 )
 
 Frame = protocol.Frame
-StreamLine = protocol.StreamLine
 
 
 def test_temperature_is_signed_tenths_little_endian():
@@ -48,21 +47,6 @@ def test_recognises_resets_and_queries_from_boiler_and_gateway():
 def test_ignores_own_reset_request_and_other_queries():
     assert not protocol.is_bus_reset(Frame.parse("31fe203400"))
     assert not protocol.is_room_temperature_query(Frame.parse("37fe200002c194"))
-
-
-def test_stream_lines():
-    line = StreamLine.parse("1793091239.008 r " + BOILER_QUERY)
-    assert line.kind == "r" and line.timestamp == 1793091239.008 and line.frame.data.hex() == "7118"
-    failed = StreamLine.parse("1793091240.100 e 31fe200f057118dc0000 ERR: arbitration lost")
-    assert failed.kind == "e" and failed.error == "ERR: arbitration lost"
-    slave = StreamLine.parse("1793091241.000 r 313c2000025917 0400112233")
-    assert slave.frame.destination == 0x3C
-
-
-def test_other_lines_are_not_stream_lines():
-    assert StreamLine.parse("direct mode started") is None
-    assert StreamLine.parse("zz:ERR: invalid argument") is None
-    assert StreamLine.parse("1793091239.008 r 37fe20000371") is None
 
 
 def test_gateway_query_for_several_zones_includes_ours():
