@@ -1,0 +1,178 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ebusd",
+        "description": "Acts as the zone 1 room sensor on the boiler's bus, like the Ariston Cube. Needs an ebusd with the direct stream mode, started with --enablehex.",
+        "data": {
+          "host": "Host",
+          "port": "Port"
+        },
+        "data_description": {
+          "host": "The ebusd that is connected to the boiler's bus.",
+          "port": "ebusd's command port."
+        },
+        "sections": {
+          "bus": {
+            "name": "Bus identity",
+            "data": {
+              "serial": "Serial number",
+              "slave": "Slave address"
+            },
+            "data_description": {
+              "serial": "12 characters, sent when the boiler enumerates the bus. The boiler does not check it.",
+              "slave": "Hex; 75 is the zone 1 room sensor."
+            }
+          }
+        }
+      },
+      "reconfigure": {
+        "title": "ebusd",
+        "data": {
+          "host": "Host",
+          "port": "Port"
+        },
+        "data_description": {
+          "host": "The ebusd that is connected to the boiler's bus.",
+          "port": "ebusd's command port."
+        },
+        "sections": {
+          "bus": {
+            "name": "Bus identity",
+            "data": {
+              "serial": "Serial number",
+              "slave": "Slave address"
+            },
+            "data_description": {
+              "serial": "12 characters, sent when the boiler enumerates the bus. The boiler does not check it.",
+              "slave": "Hex; 75 is the zone 1 room sensor."
+            }
+          }
+        }
+      },
+      "temperature": {
+        "title": "Mode",
+        "description": "Room thermostat: one temperature sensor, with a thermostat entity for the zone, like the Ariston Cube.\n\nPer-room heating: reports the room that is furthest below its target, for rooms with their own thermostats.",
+        "menu_options": {
+          "thermostat": "Room thermostat",
+          "neediest_room": "Per-room heating"
+        }
+      },
+      "neediest_room": {
+        "title": "Per-room heating",
+        "data": {
+          "climate_entities": "Rooms"
+        },
+        "data_description": {
+          "climate_entities": "Thermostats of the rooms on zone 1; only rooms in heat mode count. Reported is the boiler's zone 1 target temperature minus the largest gap between a room's target and its temperature, so the boiler heats while any room is below its target."
+        }
+      },
+      "thermostat": {
+        "title": "Room thermostat",
+        "description": "Acts like the Ariston Cube: reports a temperature sensor's value to the boiler and adds a thermostat for the zone 1 comfort temperature and zone mode.",
+        "data": {
+          "sensor_entity": "Room temperature"
+        },
+        "data_description": {
+          "sensor_entity": "Reported to the boiler as it is."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to ebusd.",
+      "stream_unsupported": "This ebusd has no direct stream mode.",
+      "hex_disabled": "This ebusd does not send messages: start it with --enablehex.",
+      "invalid_serial": "The serial number has 12 printable ASCII characters.",
+      "invalid_slave": "The slave address is two hex digits, 5 above a master address such as 70 (slave 75)."
+    },
+    "abort": {
+      "already_configured": "This ebusd is already used by a zone thermostat.",
+      "reconfigure_successful": "The thermostat now uses the new ebusd settings."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "registered": {
+        "name": "Registered"
+      },
+      "connected": {
+        "name": "ebusd connection"
+      }
+    },
+    "sensor": {
+      "reported_temperature": {
+        "name": "Reported room temperature"
+      },
+      "answer_latency": {
+        "name": "Answer latency"
+      },
+      "queries_answered": {
+        "name": "Queries answered"
+      },
+      "send_failures": {
+        "name": "Send failures"
+      },
+      "bus_resets": {
+        "name": "Bus resets"
+      },
+      "registrations": {
+        "name": "Registrations"
+      },
+      "serial_latency": {
+        "name": "Serial latency"
+      },
+      "room_offset": {
+        "name": "Room offset"
+      }
+    }
+  },
+  "issues": {
+    "disconnected": {
+      "title": "Zone 1 thermostat cannot reach ebusd",
+      "description": "The zone 1 thermostat has had no connection to ebusd at {host}:{port} for 5 minutes. While it cannot answer, the gateway resets the bus after about 27 minutes, and with the room sensor in the thermoregulation (mode 4) the boiler then raises error 411."
+    },
+    "registration_failed": {
+      "title": "Zone 1 thermostat could not register",
+      "description": "The boiler did not ask the thermostat for the room temperature after 3 bus resets. Reload the integration to try again."
+    },
+    "reset_storm": {
+      "title": "Zone 1 thermostat stopped by a bus reset storm",
+      "description": "The boiler reset the bus more than 15 times within a minute while the thermostat answered, so the thermostat stopped. Reload the integration to try again."
+    },
+    "no_room_data": {
+      "title": "Zone 1 thermostat has no room temperature",
+      "description": "The zone 1 thermostat has had no room temperature for 10 minutes, so it stopped answering the boiler. After about 27 minutes the gateway resets the bus and, with the room sensor in the thermoregulation (mode 4), the boiler raises error 411 and heats on the outdoor curve alone. Check the configured room thermostats or sensor; the thermostat answers again as soon as a temperature is back."
+    }
+  },
+  "options": {
+    "step": {
+      "temperature": {
+        "title": "Mode",
+        "description": "Room thermostat: one temperature sensor, with a thermostat entity for the zone, like the Ariston Cube.\n\nPer-room heating: reports the room that is furthest below its target, for rooms with their own thermostats.",
+        "menu_options": {
+          "thermostat": "Room thermostat",
+          "neediest_room": "Per-room heating"
+        }
+      },
+      "neediest_room": {
+        "title": "Per-room heating",
+        "data": {
+          "climate_entities": "Rooms"
+        },
+        "data_description": {
+          "climate_entities": "Thermostats of the rooms on zone 1; only rooms in heat mode count. Reported is the boiler's zone 1 target temperature minus the largest gap between a room's target and its temperature, so the boiler heats while any room is below its target."
+        }
+      },
+      "thermostat": {
+        "title": "Room thermostat",
+        "description": "Acts like the Ariston Cube: reports a temperature sensor's value to the boiler and adds a thermostat for the zone 1 comfort temperature and zone mode.",
+        "data": {
+          "sensor_entity": "Room temperature"
+        },
+        "data_description": {
+          "sensor_entity": "Reported to the boiler as it is."
+        }
+      }
+    }
+  }
+}
