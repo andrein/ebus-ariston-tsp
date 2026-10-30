@@ -1,0 +1,13 @@
+{
+  "domain": "ariston_thermostat",
+  "name": "Ariston thermostat",
+  "codeowners": [
+    "@andrein"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/andrein/ebus-ariston-tsp/blob/main/docs/room-thermostat.md",
+  "integration_type": "device",
+  "iot_class": "local_push",
+  "requirements": [],
+  "version": "0.1.0"
+}

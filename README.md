@@ -14,6 +14,8 @@ emitter produces [ebusd](https://github.com/john30/ebusd) CSV message definition
 | `src/gateway.tsp` | `Gateway` circuit (Ariston Net, slave `0x84`): Wi-Fi, internet time, connectivity, signal, activation, upgrade status, pilot settings, holiday, internet weather (outdoor temperature, day or night), serial number |
 | `src/main.tsp` | Imports the circuit files |
 | `ha/mqtt-hassio.cfg` | ebusd Home Assistant integration config: stock ebusd 26.1 plus the changes below |
+| `custom_components/ariston_thermostat` | Home Assistant integration that takes the place of the Cube room sensor of zone 1 on the bus: [docs/room-thermostat.md](docs/room-thermostat.md) |
+| `tests/ariston_thermostat` | Its tests, without Home Assistant: `uvx pytest tests/ariston_thermostat` |
 
 Message comments become the entity names in Home Assistant. A `//` comment above each message names the matching
 entry of the technical area menu in the Ariston ONE+ installation and servicing manual.
