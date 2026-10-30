@@ -56,7 +56,6 @@ class Hub:
             self._config[CONF_HOST],
             self._config[CONF_PORT],
             on_line=self._on_line,
-            on_rejected=self._on_rejected,
             on_gap=self._on_gap,
             on_connection=self._on_connection,
         )
@@ -172,12 +171,6 @@ class Hub:
     @callback
     def _on_gap(self) -> None:
         self.sensor.lost_track()
-        self._notify()
-
-    @callback
-    def _on_rejected(self, text: str) -> None:
-        _LOGGER.warning("ebusd rejected: %s", text)
-        self.sensor.statistics.send_failures += 1
         self._notify()
 
     @callback
